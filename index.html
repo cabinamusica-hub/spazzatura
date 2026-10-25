@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rifiuti Melissano</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Rifiuti">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f3f5f1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+html{color-scheme:light}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+/* Layout: a single phone column — "tonight" card first, then the next two weeks, then a searchable sorting guide */
+:root{
+  --bg:#f3f5f1; --surface:#ffffff; --fg:#1f2620; --muted:#5f6b62; --line:#dde3dc; --accent:#2f6b45;
+  --organico:#7a3f2a; --plastica:#d9a514; --carta:#2f6fb0; --vetro:#2e7d4a; --secco:#7b8580;
+  --chip-fg:#ffffff;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#141916; --surface:#1d2420; --fg:#e8ede8; --muted:#9aa69d; --line:#2c3530; --accent:#7cc495;
+  --organico:#b66a4c; --plastica:#e6b938; --carta:#5b9ad8; --vetro:#4fae72; --secco:#99a39e; --chip-fg:#121614;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#141916; --surface:#1d2420; --fg:#e8ede8; --muted:#9aa69d; --line:#2c3530; --accent:#7cc495;
+  --organico:#b66a4c; --plastica:#e6b938; --carta:#5b9ad8; --vetro:#4fae72; --secco:#99a39e; --chip-fg:#121614;
+  color-scheme:dark }
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:560px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:28px}
+header p{margin:0;color:var(--muted);font-size:.85rem;letter-spacing:.06em;text-transform:uppercase}
+h1{font-family:var(--display);font-weight:800;font-size:2rem;line-height:1.05;margin:4px 0 0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0 0 10px}
+.today{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.when{color:var(--muted);font-size:.9rem;margin:0}
+.big{font-family:var(--display);font-weight:800;font-size:1.6rem;line-height:1.1;margin:0;text-wrap:balance}
+.bins{display:flex;flex-direction:column;gap:10px}
+.bin{display:flex;align-items:center;gap:12px}
+.pail{width:34px;height:38px;border-radius:5px 5px 9px 9px;flex:none;position:relative}
+.pail::before{content:"";position:absolute;left:4px;right:4px;top:-6px;height:9px;border:3px solid var(--muted);border-bottom:0;border-radius:8px 8px 0 0}
+.bin b{display:block;font-size:1.05rem}
+.bin span{color:var(--muted);font-size:.85rem}
+.c-organico{background:var(--organico)} .c-plastica{background:var(--plastica)} .c-carta{background:var(--carta)} .c-vetro{background:var(--vetro)} .c-secco{background:var(--secco)}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.list li{display:grid;grid-template-columns:5.5rem 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line);align-items:center}
+.list li:first-child{border-top:0}
+.d{font-variant-numeric:tabular-nums}
+.d b{display:block;text-transform:capitalize}
+.d span{color:var(--muted);font-size:.85rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.chip{color:var(--chip-fg);font-size:.82rem;font-weight:700;padding:3px 10px;border-radius:999px}
+.chip.c-plastica{color:#2a2104}
+.note{color:var(--muted);font-size:.85rem;margin:8px 0 0}
+input{width:100%;box-sizing:border-box;font:inherit;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.guide{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.g{display:grid;grid-template-columns:14px 1fr;gap:12px}
+.g .bar{border-radius:7px}
+.g h3{margin:0;font-size:1rem}
+.g p{margin:2px 0 0;color:var(--muted);font-size:.92rem}
+mark{background:color-mix(in srgb, var(--accent) 25%, transparent);color:inherit;border-radius:3px}
+.empty{color:var(--muted)}
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;touch-action:pan-y}
+.cal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.cal-head h3{font-family:var(--display);font-weight:600;font-size:1.1rem;margin:0;text-transform:capitalize}
+.nav{display:flex;gap:6px}
+.nav button,.todaybtn{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:10px;min-width:40px;height:40px;cursor:pointer}
+.todaybtn{padding:0 12px;font-size:.85rem}
+.nav button:focus-visible,.todaybtn:focus-visible,.day:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.wd{text-align:center;color:var(--muted);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;padding:4px 0}
+.day{font:inherit;color:var(--fg);background:transparent;border:0;border-radius:10px;aspect-ratio:1/1.05;max-width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;padding:6px 0 0;cursor:pointer;font-variant-numeric:tabular-nums}
+.day.out{visibility:hidden}
+.day.has{background:var(--bg)}
+.day.is-today .num{background:var(--accent);color:var(--surface);border-radius:999px;padding:0 6px}
+.day.sel{outline:2px solid var(--fg);outline-offset:-2px}
+.day.past{opacity:.45}
+.dots{display:flex;gap:3px}
+.dots i{width:8px;height:8px;border-radius:50%;display:block}
+.detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);min-height:2.6rem}
+.detail p{margin:0 0 6px;color:var(--muted);font-size:.9rem;text-transform:capitalize}
+@media (prefers-reduced-motion: no-preference){ .grid.slide{animation:fade .18s ease-out} @keyframes fade{from{opacity:.3}to{opacity:1}} }
+.notif{display:flex;flex-direction:column;gap:10px;border:1px dashed var(--line);border-radius:18px;padding:16px}
+.notif p{margin:0}
+.notif .st{color:var(--muted);font-size:.92rem}
+.notif .row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:inherit;font-weight:700;border-radius:12px;padding:10px 16px;cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:var(--surface)}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line);font-weight:400}
+.btn:disabled{opacity:.5;cursor:default}
+.btn:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.steps{margin:0;padding-left:1.2rem;color:var(--muted);font-size:.92rem}
+footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:14px}
+footer b{color:var(--fg);user-select:all}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <p>Comune di Melissano · Area rurale</p>
+    <h1>Cosa porto fuori stasera?</h1>
+  </header>
+
+  <section class="today" id="today" aria-live="polite"></section>
+
+  <section>
+    <h2>Prossime due settimane</h2>
+    <ul class="list" id="list"></ul>
+    <p class="note">Il giovedì, insieme all'organico: carta il 1°, 3° e 5° giovedì del mese, vetro il 2° e 4° giovedì.</p>
+  </section>
+
+  <section class="notif" id="notif">
+    <h2 style="margin:0">Promemoria alle 18</h2>
+    <p class="st" id="notif-status">Controllo le notifiche…</p>
+    <ol class="steps" id="notif-install" hidden>
+      <li>Apri questa pagina in Safari.</li>
+      <li>Tocca Condividi, poi “Aggiungi alla schermata Home”.</li>
+      <li>Apri l'app dalla Home e attiva le notifiche qui.</li>
+    </ol>
+    <div class="row">
+      <button type="button" class="btn" id="notif-on" hidden>Attiva notifiche</button>
+      <button type="button" class="btn ghost" id="notif-test" hidden>Invia prova</button>
+      <button type="button" class="btn ghost" id="notif-off" hidden>Disattiva</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Calendario</h2>
+    <div class="cal" id="cal">
+      <div class="cal-head">
+        <h3 id="cal-title"></h3>
+        <div class="nav">
+          <button type="button" class="todaybtn" id="cal-today">Oggi</button>
+          <button type="button" id="cal-prev" aria-label="Mese precedente">‹</button>
+          <button type="button" id="cal-next" aria-label="Mese successivo">›</button>
+        </div>
+      </div>
+      <div class="grid" id="cal-grid"></div>
+      <div class="detail" id="cal-detail"></div>
+    </div>
+    <p class="note">Scorri a destra o sinistra per cambiare mese. Tocca un giorno per vedere cosa portare fuori.</p>
+  </section>
+
+  <section>
+    <h2>Dove lo butto?</h2>
+    <label for="q" class="note" style="display:block;margin:0 0 6px">Cerca un oggetto, per esempio “pizza” o “lattine”</label>
+    <input id="q" type="search" placeholder="Cerca…" autocomplete="off">
+    <div class="guide" id="guide"></div>
+  </section>
+
+  <footer>Ingombranti, RAEE, sfalci e potature: ritiro gratuito a domicilio su prenotazione al numero verde <b>800 007 850</b> · arolecce11.it</footer>
+</div>
+
+<script>
+const BINS={
+  organico:{n:"Organico",c:"marrone",items:"Avanzi di cibo non liquidi, scarti di frutta e verdura, fondi di caffè, tovaglioli e fazzoletti di carta, filtri da tè, gusci di frutta secca e uova, gusci di molluschi e crostacei, lettiera naturale per animali, cenere, cartone per pizza sporco"},
+  plastica:{n:"Plastica e metalli",c:"giallo",items:"Contenitori in plastica per igiene personale e pulizia casa, piatti e bicchieri in plastica, reti per frutta e verdura, vaschette per alimenti, sacchetti in plastica, imballaggi in polistirolo, fogli e contenitori in alluminio, lattine per bevande, scatolette per alimenti, tappi a corona"},
+  carta:{n:"Carta e cartone",c:"blu",items:"Giornali, tetra pak, libri, quaderni, fotocopie e fogli vari, imballaggi in carta e cartone, cartone per pizza pulito"},
+  vetro:{n:"Vetro",c:"verde",items:"Bottiglie in vetro, barattoli, vasi e vasetti in vetro"},
+  secco:{n:"Non riciclabile",c:"grigio",items:"Penne, pannolini, assorbenti, gomme da masticare, cicche di sigarette, giocattoli, carta oleata, CD, piatti e tazze in ceramica, rasoi, spazzolini, lettiere chimiche per animali domestici, posate in plastica, siringhe con ago provvisto di cappuccio"}
+};
+const fmt=(d,o)=>d.toLocaleDateString("it-IT",o);
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+
+// Bins to put out on date d (Tue, Thu, Sat). Thursday: paper on the 1st/3rd/5th Thursday of the month, glass on the 2nd/4th.
+function binsFor(d){
+  const w=d.getDay();
+  if(w===2) return ["organico","plastica"];
+  if(w===6) return ["organico","secco"];
+  if(w===4){
+    const n=Math.ceil(d.getDate()/7);
+    return ["organico", n%2===1 ? "carta" : "vetro"];
+  }
+  return [];
+}
+
+function render(){
+  const now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  // Next put-out evening: today if it's a collection day, otherwise the next one
+  let next=today; while(!binsFor(next).length) next=addDays(next,1);
+  const isToday=+next===+today, isTomorrow=+next===+addDays(today,1);
+  const label=isToday?"Stasera":isTomorrow?"Domani sera":fmt(next,{weekday:"long"})+" sera";
+  const b=binsFor(next);
+  document.getElementById("today").innerHTML=
+    `<p class="when">${fmt(next,{weekday:"long",day:"numeric",month:"long"})}</p>
+     <p class="big">${label}: ${b.map(k=>BINS[k].n.toLowerCase()).join(" e ")}</p>
+     <div class="bins">${b.map(k=>`<div class="bin"><div class="pail c-${k}"></div><div><b>${BINS[k].n}</b><span>Contenitore ${BINS[k].c}</span></div></div>`).join("")}</div>`;
+
+  const rows=[];
+  for(let i=0;i<15;i++){
+    const d=addDays(today,i), k=binsFor(d); if(!k.length) continue;
+    rows.push(`<li><div class="d"><b>${i===0?"oggi":i===1?"domani":fmt(d,{weekday:"short"})}</b><span>${fmt(d,{day:"numeric",month:"short"})}</span></div>
+      <div class="chips">${k.map(x=>`<span class="chip c-${x}">${BINS[x].n}</span>`).join("")}</div></li>`);
+  }
+  document.getElementById("list").innerHTML=rows.join("");
+}
+
+function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}
+function renderGuide(q){
+  q=q.trim().toLowerCase();
+  const out=Object.entries(BINS).map(([k,v])=>{
+    const parts=v.items.split(", ");
+    const hit=q?parts.filter(p=>p.toLowerCase().includes(q)):parts;
+    if(q&&!hit.length) return "";
+    const txt=hit.map(p=>{ if(!q) return esc(p); const i=p.toLowerCase().indexOf(q);
+      return esc(p.slice(0,i))+"<mark>"+esc(p.slice(i,i+q.length))+"</mark>"+esc(p.slice(i+q.length)); }).join(", ");
+    return `<div class="g"><div class="bar c-${k}"></div><div><h3>${v.n} · ${v.c}</h3><p>${txt}</p></div></div>`;
+  }).join("");
+  document.getElementById("guide").innerHTML=out||`<p class="empty">Nessun risultato. Se non è riciclabile va nel grigio; nel dubbio chiama il numero verde.</p>`;
+}
+
+// Month calendar
+const T0=new Date(); const TODAY=new Date(T0.getFullYear(),T0.getMonth(),T0.getDate());
+let view=new Date(TODAY.getFullYear(),TODAY.getMonth(),1), sel=new Date(TODAY);
+function renderCal(anim){
+  const y=view.getFullYear(), m=view.getMonth();
+  document.getElementById("cal-title").textContent=fmt(view,{month:"long",year:"numeric"});
+  const wds=["lun","mar","mer","gio","ven","sab","dom"];
+  let h=wds.map(w=>`<div class="wd">${w}</div>`).join("");
+  const lead=(new Date(y,m,1).getDay()+6)%7, days=new Date(y,m+1,0).getDate();
+  for(let i=0;i<lead;i++) h+=`<div class="day out" aria-hidden="true"></div>`;
+  for(let d=1;d<=days;d++){
+    const dt=new Date(y,m,d), k=binsFor(dt);
+    const cls=["day",k.length?"has":"",+dt===+TODAY?"is-today":"",+dt===+sel?"sel":"",dt<TODAY?"past":""].join(" ");
+    const lbl=fmt(dt,{weekday:"long",day:"numeric",month:"long"})+(k.length?": "+k.map(x=>BINS[x].n).join(", "):"");
+    h+=`<button type="button" class="${cls}" data-d="${d}" aria-label="${lbl}"><span class="num">${d}</span><span class="dots">${k.map(x=>`<i class="c-${x}"></i>`).join("")}</span></button>`;
+  }
+  const g=document.getElementById("cal-grid"); g.innerHTML=h;
+  if(anim){g.classList.remove("slide");void g.offsetWidth;g.classList.add("slide")}
+  renderDetail();
+}
+function renderDetail(){
+  const k=binsFor(sel), el=document.getElementById("cal-detail");
+  const head=`<p>${fmt(sel,{weekday:"long",day:"numeric",month:"long"})}</p>`;
+  el.innerHTML=head+(k.length
+    ? `<div class="chips">${k.map(x=>`<span class="chip c-${x}">${BINS[x].n} · ${BINS[x].c}</span>`).join("")}</div>`
+    : `<span class="empty">Nessun conferimento.</span>`);
+}
+function shift(n){view=new Date(view.getFullYear(),view.getMonth()+n,1);renderCal(true)}
+document.getElementById("cal-prev").onclick=()=>shift(-1);
+document.getElementById("cal-next").onclick=()=>shift(1);
+document.getElementById("cal-today").onclick=()=>{view=new Date(TODAY.getFullYear(),TODAY.getMonth(),1);sel=new Date(TODAY);renderCal(true)};
+document.getElementById("cal-grid").addEventListener("click",e=>{
+  const b=e.target.closest(".day[data-d]"); if(!b) return;
+  sel=new Date(view.getFullYear(),view.getMonth(),+b.dataset.d); renderCal(false);
+});
+let sx=null, sy=null;
+const cal=document.getElementById("cal");
+cal.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+cal.addEventListener("touchend",e=>{
+  if(sx===null) return; const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5) shift(dx<0?1:-1); sx=null;
+},{passive:true});
+
+render(); renderGuide(""); renderCal(false);
+document.getElementById("q").addEventListener("input",e=>renderGuide(e.target.value));
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)render()});
+</script>
+
+<script src="config.js"></script>
+<script src="notifiche.js"></script>
+</body>
+</html>
