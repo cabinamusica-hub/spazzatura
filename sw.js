@@ -7,8 +7,8 @@ self.addEventListener("push", (e) => {
   try { d = e.data ? e.data.json() : {}; } catch (_) { d = { body: e.data && e.data.text() }; }
   e.waitUntil(self.registration.showNotification(d.title || "Raccolta rifiuti", {
     body: d.body || "",
-    icon: "icons/icon-192.png",
-    badge: "icons/icon-192.png",
+    icon: "icons/bidone-192.png",
+    badge: "icons/bidone-192.png",
     tag: "promemoria-rifiuti",
   }));
 });

@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rifiuti Melissano</title>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/bidone-192.png">
+<link rel="apple-touch-icon" href="icons/bidone-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Rifiuti">
@@ -87,6 +88,25 @@ mark{background:color-mix(in srgb, var(--accent) 25%, transparent);color:inherit
 .detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);min-height:2.6rem}
 .detail p{margin:0 0 6px;color:var(--muted);font-size:.9rem;text-transform:capitalize}
 @media (prefers-reduced-motion: no-preference){ .grid.slide{animation:fade .18s ease-out} @keyframes fade{from{opacity:.3}to{opacity:1}} }
+/* settings */
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.gear{flex:none;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--fg);display:grid;place-items:center;cursor:pointer}
+.gear svg{width:22px;height:22px}
+.gear:focus-visible,.close:focus-visible,.time:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.banner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border:1px dashed var(--line);border-radius:14px;padding:12px 14px;color:var(--muted);font-size:.92rem}
+.sheet{position:fixed;inset:0;z-index:20;background:var(--bg);overflow-y:auto;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet .wrap{gap:22px}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sheet-head h2{font-size:1.6rem;font-weight:800;margin:0}
+.close{font:inherit;font-weight:700;border:0;background:transparent;color:var(--accent);padding:10px 4px;cursor:pointer}
+.group{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.group h3{margin:0;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.timerow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.time{font:inherit;font-family:var(--display);font-weight:800;font-size:1.8rem;padding:6px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font-variant-numeric:tabular-nums;width:auto}
+.presets{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.preset{font:inherit;font-size:.88rem;font-variant-numeric:tabular-nums;border:1px solid var(--line);background:transparent;color:var(--fg);border-radius:999px;padding:6px 12px;cursor:pointer}
+.preset[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.hint{margin:0;color:var(--muted);font-size:.88rem}
 .notif{display:flex;flex-direction:column;gap:10px;border:1px dashed var(--line);border-radius:18px;padding:16px}
 .notif p{margin:0}
 .notif .st{color:var(--muted);font-size:.92rem}
@@ -104,9 +124,19 @@ footer b{color:var(--fg);user-select:all}
 
 <div class="wrap">
   <header>
-    <p>Comune di Melissano · Area rurale</p>
-    <h1>Cosa porto fuori stasera?</h1>
+    <div>
+      <p>Comune di Melissano · Area rurale</p>
+      <h1>Cosa porto fuori stasera?</h1>
+    </div>
+    <button type="button" class="gear" id="open-settings" aria-label="Impostazioni">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
   </header>
+
+  <div class="banner" id="notif-banner" hidden>
+    <span id="banner-text">Notifiche non attive.</span>
+    <button type="button" class="btn ghost" id="banner-open">Impostazioni</button>
+  </div>
 
   <section class="today" id="today" aria-live="polite"></section>
 
@@ -114,21 +144,6 @@ footer b{color:var(--fg);user-select:all}
     <h2>Prossime due settimane</h2>
     <ul class="list" id="list"></ul>
     <p class="note">Il giovedì, insieme all'organico: carta il 1°, 3° e 5° giovedì del mese, vetro il 2° e 4° giovedì.</p>
-  </section>
-
-  <section class="notif" id="notif">
-    <h2 style="margin:0">Promemoria alle 18</h2>
-    <p class="st" id="notif-status">Controllo le notifiche…</p>
-    <ol class="steps" id="notif-install" hidden>
-      <li>Apri questa pagina in Safari.</li>
-      <li>Tocca Condividi, poi “Aggiungi alla schermata Home”.</li>
-      <li>Apri l'app dalla Home e attiva le notifiche qui.</li>
-    </ol>
-    <div class="row">
-      <button type="button" class="btn" id="notif-on" hidden>Attiva notifiche</button>
-      <button type="button" class="btn ghost" id="notif-test" hidden>Invia prova</button>
-      <button type="button" class="btn ghost" id="notif-off" hidden>Disattiva</button>
-    </div>
   </section>
 
   <section>
@@ -184,12 +199,13 @@ function binsFor(d){
 function render(){
   const now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
   // Next put-out evening: today if it's a collection day, otherwise the next one
-  let next=today; while(!binsFor(next).length) next=addDays(next,1);
-  const isToday=+next===+today, isTomorrow=+next===+addDays(today,1);
-  const label=isToday?"Stasera":isTomorrow?"Domani sera":fmt(next,{weekday:"long"})+" sera";
+  // Next collection from tomorrow on; the bins go out the evening before
+  let next=addDays(today,1); while(!binsFor(next).length) next=addDays(next,1);
+  const eve=addDays(next,-1);
+  const label=+eve===+today?"Stasera":+eve===+addDays(today,1)?"Domani sera":fmt(eve,{weekday:"long"})+" sera";
   const b=binsFor(next);
   document.getElementById("today").innerHTML=
-    `<p class="when">${fmt(next,{weekday:"long",day:"numeric",month:"long"})}</p>
+    `<p class="when">Ritiro ${fmt(next,{weekday:"long",day:"numeric",month:"long"})}</p>
      <p class="big">${label}: ${b.map(k=>BINS[k].n.toLowerCase()).join(" e ")}</p>
      <div class="bins">${b.map(k=>`<div class="bin"><div class="pail c-${k}"></div><div><b>${BINS[k].n}</b><span>Contenitore ${BINS[k].c}</span></div></div>`).join("")}</div>`;
 
@@ -263,6 +279,48 @@ render(); renderGuide(""); renderCal(false);
 document.getElementById("q").addEventListener("input",e=>renderGuide(e.target.value));
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)render()});
 </script>
+
+<div class="sheet" id="settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
+  <div class="wrap">
+    <div class="sheet-head">
+      <h2 id="settings-title">Impostazioni</h2>
+      <button type="button" class="close" id="close-settings">Fine</button>
+    </div>
+
+    <section class="group notif" id="notif">
+      <h3>Notifiche</h3>
+      <p class="st" id="notif-status">Controllo le notifiche…</p>
+      <ol class="steps" id="notif-install" hidden>
+        <li>Apri questa pagina in Safari.</li>
+        <li>Tocca Condividi, poi “Aggiungi alla schermata Home”.</li>
+        <li>Apri l'app dalla Home e attiva le notifiche da qui.</li>
+      </ol>
+      <div class="row">
+        <button type="button" class="btn" id="notif-on" hidden>Attiva notifiche</button>
+        <button type="button" class="btn ghost" id="notif-test" hidden>Invia prova</button>
+        <button type="button" class="btn ghost" id="notif-off" hidden>Disattiva</button>
+      </div>
+    </section>
+
+    <section class="group">
+      <h3>Orario del promemoria</h3>
+      <p class="hint">La sera prima di ogni raccolta: lunedì, mercoledì e venerdì.</p>
+      <div class="timerow">
+        <label for="notify-time" class="hint">Alle</label>
+        <input type="time" id="notify-time" class="time" step="300" value="18:00">
+        <button type="button" class="btn" id="save-time">Salva</button>
+      </div>
+      <div class="presets" id="presets">
+        <button type="button" class="preset" data-t="17:00">17:00</button>
+        <button type="button" class="preset" data-t="18:00">18:00</button>
+        <button type="button" class="preset" data-t="19:00">19:00</button>
+        <button type="button" class="preset" data-t="20:00">20:00</button>
+        <button type="button" class="preset" data-t="21:00">21:00</button>
+      </div>
+      <p class="hint" id="time-status">Gli orari vanno di 5 in 5 minuti.</p>
+    </section>
+  </div>
+</div>
 
 <script src="config.js"></script>
 <script src="notifiche.js"></script>
