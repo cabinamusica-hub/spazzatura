@@ -40,7 +40,8 @@
     if (sub) {
       // Risalva sempre l'iscrizione: se un tentativo precedente non era arrivato a Supabase, si sistema da solo
       const j = sub.toJSON();
-      rpc("save_subscription", { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth }).catch(() => {});
+      try { await rpc("save_subscription", { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth }); }
+      catch (e) { say("Notifiche attive sul telefono, ma non salvate su Supabase: " + e.message); show(bOff, true); return; }
       say("Attive. Ricevi un promemoria alle 18 di lunedì, mercoledì e venerdì.");
       show(bOff, true); show(bTest, true);
     } else {
@@ -78,7 +79,11 @@
         headers: { "Content-Type": "application/json", apikey: C.SUPABASE_KEY },
         body: JSON.stringify({ test: true, endpoint: sub.endpoint }),
       });
-      if (!r.ok) throw new Error(`errore ${r.status}`);
+      if (!r.ok) {
+        let msg = `errore ${r.status}`;
+        try { const j = await r.json(); msg = j.error || j.message || msg; } catch (_) {}
+        throw new Error(msg);
+      }
       say("Prova inviata: dovrebbe arrivare tra pochi secondi.");
     } catch (e) { say("Prova non riuscita: " + e.message); }
     bTest.disabled = false;
