@@ -38,6 +38,9 @@
     const reg = await navigator.serviceWorker.ready;
     const sub = await reg.pushManager.getSubscription();
     if (sub) {
+      // Risalva sempre l'iscrizione: se un tentativo precedente non era arrivato a Supabase, si sistema da solo
+      const j = sub.toJSON();
+      rpc("save_subscription", { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth }).catch(() => {});
       say("Attive. Ricevi un promemoria alle 18 di lunedì, mercoledì e venerdì.");
       show(bOff, true); show(bTest, true);
     } else {
